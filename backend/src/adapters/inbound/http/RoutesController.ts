@@ -72,7 +72,7 @@ export class RoutesController {
 
       const { routeId } = req.params;
 
-      const route = await this.setBaselineRouteUseCase.execute(routeId);
+      const route = await this.setBaselineRouteUseCase.execute(String(routeId));
 
       res.status(200).json({
         success: true,
@@ -96,7 +96,7 @@ export class RoutesController {
    * Get baseline vs comparison data
    */
   getComparison = async (
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
