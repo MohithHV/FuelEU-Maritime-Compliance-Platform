@@ -1,7 +1,6 @@
-import { ShipCompliance, ComplianceBalance } from '../domain/entities/ShipCompliance';
+import { ComplianceBalance } from '../domain/entities/ShipCompliance';
 import { IComplianceRepository } from '../ports/IComplianceRepository';
 import { IBankingRepository } from '../ports/IBankingRepository';
-import { ComplianceCalculator } from '../domain/services/ComplianceCalculator';
 
 export class ComputeComplianceBalanceUseCase {
   constructor(
