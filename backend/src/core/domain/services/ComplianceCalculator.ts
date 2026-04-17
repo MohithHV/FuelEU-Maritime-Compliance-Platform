@@ -5,10 +5,10 @@
 
 export class ComplianceCalculator {
   // Target Intensity for 2025 = 89.3368 gCO₂e/MJ (2% below 91.16)
-  private static readonly TARGET_INTENSITY_2025 = 89.3368;
+  public static readonly TARGET_INTENSITY_2025 = 89.3368;
 
   // Energy conversion factor: ~41,000 MJ/ton of fuel
-  private static readonly ENERGY_CONVERSION_FACTOR = 41000;
+  public static readonly ENERGY_CONVERSION_FACTOR = 41000;
 
   /**
    * Calculate Compliance Balance (CB)
