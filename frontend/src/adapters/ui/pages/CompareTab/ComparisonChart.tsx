@@ -18,6 +18,7 @@ interface ComparisonChartProps {
 
 function ComparisonChart({ comparisons, targetValue }: ComparisonChartProps) {
   const chartData = comparisons.map((comp) => ({
+    name: `${comp.routeId} (${comp.year})`,
     year: comp.year.toString(),
     baseline: comp.baselineIntensity,
     actual: comp.actualIntensity,
@@ -32,7 +33,7 @@ function ComparisonChart({ comparisons, targetValue }: ComparisonChartProps) {
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" />
+          <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
           <YAxis label={{ value: 'gCO2e/MJ', angle: -90, position: 'insideLeft' }} />
           <Tooltip
             formatter={(value: number) => value.toFixed(4) + ' gCO2e/MJ'}

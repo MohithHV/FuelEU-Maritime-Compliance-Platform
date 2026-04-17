@@ -1,4 +1,7 @@
 export interface Comparison {
+  id: string;
+  routeId: string;
+  baselineRouteId: string;
   year: number;
   baselineIntensity: number;
   actualIntensity: number;

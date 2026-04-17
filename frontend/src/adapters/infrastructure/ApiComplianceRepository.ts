@@ -11,13 +11,13 @@ export class ApiComplianceRepository implements IComplianceRepository {
 
   async getComplianceBalance(shipId: string, year: number): Promise<ComplianceBalance> {
     try {
-      const response = await apiClient.get<ComplianceBalance>(
+      const response = await apiClient.get<{ success: boolean; data: ComplianceBalance }>(
         `${this.basePath}/cb`,
         {
           params: { shipId, year }
         }
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching compliance balance:', error);
       throw error;
@@ -29,13 +29,13 @@ export class ApiComplianceRepository implements IComplianceRepository {
     year: number
   ): Promise<AdjustedComplianceBalance> {
     try {
-      const response = await apiClient.get<AdjustedComplianceBalance>(
+      const response = await apiClient.get<{ success: boolean; data: AdjustedComplianceBalance }>(
         `${this.basePath}/adjusted-cb`,
         {
           params: { shipId, year }
         }
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching adjusted compliance balance:', error);
       throw error;

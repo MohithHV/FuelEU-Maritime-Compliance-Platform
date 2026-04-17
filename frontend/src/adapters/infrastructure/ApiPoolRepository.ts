@@ -13,8 +13,8 @@ export class ApiPoolRepository implements IPoolRepository {
 
   async createPool(request: CreatePoolRequest): Promise<Pool> {
     try {
-      const response = await apiClient.post<Pool>(this.basePath, request);
-      return response.data;
+      const response = await apiClient.post<{ success: boolean; message: string; data: Pool }>(this.basePath, request);
+      return response.data.data;
     } catch (error) {
       console.error('Error creating pool:', error);
       throw error;

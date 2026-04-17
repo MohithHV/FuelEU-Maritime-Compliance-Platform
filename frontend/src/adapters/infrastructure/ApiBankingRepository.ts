@@ -19,10 +19,10 @@ export class ApiBankingRepository implements IBankingRepository {
         params.append('year', year.toString());
       }
 
-      const response = await apiClient.get<BankEntry[]>(
+      const response = await apiClient.get<{ success: boolean; data: BankEntry[]; count: number }>(
         `${this.basePath}/records?${params.toString()}`
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching bank records:', error);
       throw error;
@@ -46,11 +46,11 @@ export class ApiBankingRepository implements IBankingRepository {
 
   async bankSurplus(request: BankRequest): Promise<BankEntry> {
     try {
-      const response = await apiClient.post<BankEntry>(
+      const response = await apiClient.post<{ success: boolean; message: string; data: BankEntry }>(
         `${this.basePath}/bank`,
         request
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error banking surplus:', error);
       throw error;
@@ -59,11 +59,11 @@ export class ApiBankingRepository implements IBankingRepository {
 
   async applyBanked(request: ApplyBankedRequest): Promise<BankEntry> {
     try {
-      const response = await apiClient.post<BankEntry>(
+      const response = await apiClient.post<{ success: boolean; message: string; data: BankEntry }>(
         `${this.basePath}/apply`,
         request
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error applying banked balance:', error);
       throw error;

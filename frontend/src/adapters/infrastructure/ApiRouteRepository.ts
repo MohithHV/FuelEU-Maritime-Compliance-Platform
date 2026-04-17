@@ -23,8 +23,8 @@ export class ApiRouteRepository implements IRouteRepository {
       const queryString = params.toString();
       const url = queryString ? `${this.basePath}?${queryString}` : this.basePath;
 
-      const response = await apiClient.get<Route[]>(url);
-      return response.data;
+      const response = await apiClient.get<{ success: boolean; data: Route[]; count: number }>(url);
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching routes:', error);
       throw error;
@@ -46,10 +46,10 @@ export class ApiRouteRepository implements IRouteRepository {
 
   async setBaseline(routeId: string): Promise<Route> {
     try {
-      const response = await apiClient.post<Route>(
+      const response = await apiClient.post<{ success: boolean; message: string; data: Route }>(
         `${this.basePath}/${routeId}/baseline`
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error setting baseline:', error);
       throw error;
@@ -75,8 +75,53 @@ export class ApiRouteRepository implements IRouteRepository {
         ? `${this.basePath}/comparison?${queryString}`
         : `${this.basePath}/comparison`;
 
-      const response = await apiClient.get<ComparisonResult>(url);
-      return response.data;
+      interface BackendComparison {
+        baseline: Route;
+        comparison: Route;
+        percentDiff: number;
+        compliant: boolean;
+        target: number;
+      }
+
+      interface BackendComparisonResult {
+        comparisons: BackendComparison[];
+        target: number;
+      }
+
+      const response = await apiClient.get<{ success: boolean; data: BackendComparisonResult }>(url);
+      const backendData = response.data.data;
+
+      // Transform backend response to match frontend Comparison interface
+      const comparisons = backendData.comparisons.map((item, index) => ({
+        id: `${item.comparison.routeId}-${item.baseline.routeId}-${index}`, // Unique identifier
+        routeId: item.comparison.routeId,
+        baselineRouteId: item.baseline.routeId,
+        year: item.comparison.year,
+        baselineIntensity: item.baseline.ghgIntensity,
+        actualIntensity: item.comparison.ghgIntensity,
+        difference: item.comparison.ghgIntensity - item.baseline.ghgIntensity,
+        percentChange: item.percentDiff,
+        isCompliant: item.compliant,
+      }));
+
+      // Calculate summary statistics
+      const totalYears = comparisons.length;
+      const compliantYears = comparisons.filter((c) => c.isCompliant).length;
+      const nonCompliantYears = totalYears - compliantYears;
+      const averageImprovement =
+        totalYears > 0
+          ? comparisons.reduce((sum, c) => sum + c.percentChange, 0) / totalYears
+          : 0;
+
+      return {
+        comparisons,
+        summary: {
+          totalYears,
+          compliantYears,
+          nonCompliantYears,
+          averageImprovement,
+        },
+      };
     } catch (error) {
       console.error('Error fetching comparison:', error);
       throw error;

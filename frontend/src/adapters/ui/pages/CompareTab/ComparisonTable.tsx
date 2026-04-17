@@ -32,7 +32,7 @@ function ComparisonTable({ comparisons, targetValue }: ComparisonTableProps) {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {comparisons.map((comparison) => (
-              <tr key={comparison.year}>
+              <tr key={comparison.id}>
                 <td className="table-cell font-medium">{comparison.year}</td>
                 <td className="table-cell">{comparison.baselineIntensity.toFixed(4)} gCO2e/MJ</td>
                 <td className="table-cell">{comparison.actualIntensity.toFixed(4)} gCO2e/MJ</td>
